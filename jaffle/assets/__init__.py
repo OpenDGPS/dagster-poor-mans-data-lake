@@ -1,6 +1,7 @@
 from dagster import asset
 from jaffle.duckpond import SQL
 import pandas as pd
+from pandas import DataFrame
 
 
 @asset
@@ -28,6 +29,14 @@ def continent_population(population: SQL) -> SQL:
         "select continent, avg(pop_change) as avg_pop_change from $population group by 1 order by 2 desc",
         population=population,
     )
+
+@asset
+def simple_df() -> DataFrame:
+    """Only numbers from 10 to 60 by each step increasing by 10"""
+    data = [10,20,30,40,50,60]
+    # Create the pandas DataFrame with column name is provided explicitly
+    df = pd.DataFrame(data, columns=['Numbers'])
+    return df
 
 
 @asset(required_resource_keys={"duckdb"})
